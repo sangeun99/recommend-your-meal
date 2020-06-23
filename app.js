@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
+const KAKAOKEY = '6bf1af821e72e1795ed820a6fa553448';
 const request = require('request');
+const KAKAOURL = 'https://dapi.kakao.com/v2/local/search/keyword.json'
 const TARGET_URL = 'https://api.line.me/v2/bot/message/reply'
 const TOKEN = 'dNIqjRizz4FokBqT/MaquXsb1qb+SCxlRNfJOjmK9yu91dSFpPWFDzDvZXWSR5I7pDEoI1F+v+VQktU+sLwoy8yCE4iX/8RswH2w6NcPO9MxmtlPocWqKfaoGjPFjIS/ehisf3bLKFlWQEpJdPkKLgdB04t89/1O/w1cDnyilFU='
 const fs = require('fs');
@@ -10,6 +12,11 @@ const HTTPS = require('https');
 const domain = "www.umosstest.tk"
 const sslport = 23023;
 const bodyParser = require('body-parser');
+var mylocation = { // 기본주소
+    "address": '대한민국 경기도 용인시 기흥구 서천동 443',
+    "latitude":  37.24652623601692,
+    "longitude": 127.07758311277773
+};
 
 app.use(bodyParser.json());
 app.post('/hook', function (req, res) {
@@ -18,26 +25,76 @@ app.post('/hook', function (req, res) {
     var source = eventObj.source;
     var message = eventObj.message;
 
-
     // request log
     console.log('======================', new Date() ,'======================');
     console.log('[request]', req.body);
     console.log('[request source] ', eventObj.source);
     console.log('[request message]', eventObj.message);
 
-    if (eventObj.message.text == 'buttons'){
-        buttons(eventObj.replyToken, eventObj.message.text);
+    if (eventObj.message.type == 'location'){
+        mylocation = message;
     }
-    else if (eventObj.message.text == 'quick'){
-        quickreply(eventObj.replyToken, eventObj.message.text);
 
+    else if (eventObj.message.text == '내위치'){
+        quickreply(eventObj.replyToken, eventObj.message.text);
     }
+
     else {
-        reply(eventObj.replyToken, eventObj.message.text);
+        findlocation(eventObj.replyToken, eventObj.message.text);
     }
 
     res.sendStatus(200);
 });
+
+function findlocation(replyToken, keyword){
+
+    var options = {
+        url: KAKAOURL,
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': `KakaoAK ${KAKAOKEY}`
+        },
+        form : {
+            'query' : keyword,
+            'x' : mylocation.latitude,
+            'y': mylocation.longitude,
+            'size' : 1
+        },
+        json : true
+    };
+
+    request.get(options, function(error,response,body){
+        if(!error && response.statusCode == 200) {
+            console.log(body.documents[0]);
+            replyresult(replyToken, body.documents[0]);
+        }
+    });
+}
+
+function replyresult(replyToken, result) {
+    request.post(
+        {
+            url: TARGET_URL,
+            headers: {
+                'Authorization': `Bearer ${TOKEN}`
+            },
+            json: {
+                "replyToken":replyToken,
+                "messages":[
+                    {
+                        "type": "location",
+                        "title": result.place_name,
+                        "address": result.road_address_name,
+                        "latitude":  result.y,
+                        "longitude": result.x
+                    }
+                ]
+            }
+        },(error, response, body) => {
+            console.log(body)
+        });
+}
+
 function quickreply(replyToken, message) {
     request.post(
         {
@@ -50,64 +107,9 @@ function quickreply(replyToken, message) {
                 "messages":[
                     {
                         "type": "text", 
-                        "text": "Select your favorite food category or send me your location!",
+                        "text": "You can send your location!",
                         "quickReply": {
-                          "items": [
-                            {
-                              "type": "action",
-                              "imageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                              "action": {
-                                "type": "message",
-                                "label": "한식",
-                                "text": "한식"
-                              }
-                            }
-                            ,
-                            {
-                                "type": "action",
-                                "imageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                                "action": {
-                                  "type": "message",
-                                  "label": "일식",
-                                  "text": "일식"
-                                }
-                            },
-                            {
-                                "type": "action", 
-                                "imageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                                "action": {
-                                  "type": "message",
-                                  "label": "중식",
-                                  "text": "중식"
-                                }
-                            },
-                            {
-                              "type": "action",
-                              "imageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                              "action": {
-                                "type": "message",
-                                "label": "양식",
-                                "text": "양식"
-                              }
-                            },
-                            {
-                                "type": "action",
-                                "imageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                                "action": {
-                                  "type": "message",
-                                  "label": "아시아",
-                                  "text": "아시아"
-                                }
-                            },
-                            {
-                                "type": "action",
-                                "imageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                                "action": {
-                                  "type": "message",
-                                  "label": "패스트푸드",
-                                  "text": "패스트푸드"
-                                }
-                              },
+                          "items": [                            
                             {
                               "type": "action", 
                               "action": {
@@ -117,87 +119,6 @@ function quickreply(replyToken, message) {
                            }
                         ]
                         }
-                    }
-                ]
-            }
-        },(error, response, body) => {
-            console.log(body)
-        });
-}
-
-function buttons(replyToken, message) {
-    request.post(
-        {
-            url: TARGET_URL,
-            headers: {
-                'Authorization': `Bearer ${TOKEN}`
-            },
-            json: {
-                "replyToken": replyToken,
-                "messages":[
-                    // {
-                    //     "type":"text",
-                    //     "text":"Hello, user"
-                    // },
-                    {
-                        "type": "template",
-                        "altText": "This is a buttons template",
-                        "template": {
-                            "type": "buttons",
-                            "thumbnailImageUrl": "https://ifh.cc/g/Tj1uDj.jpg",
-                            "imageAspectRatio": "rectangle",
-                            "imageSize": "cover",
-                            "imageBackgroundColor": "#FFFFFF",
-                            "title": "Menu",
-                            "text": "Please select",
-                            "defaultAction": {
-                                // "type": "uri", 
-                                // "label": "View detail",
-                                // "uri": "http://example.com/page/123"
-                            },
-                            "actions": [
-                                {
-                                    "type": "postback",
-                                    "label": "Buy",
-                                    "data": "action=buy&itemid=123"
-                                },
-                                {
-                                    "type": "postback",
-                                    "label": "Add to cart",
-                                    "data": "action=add&itemid=123"
-                                },
-                                {
-                                    "type": "uri",
-                                    "label": "View detail",
-                                    "uri": "http://example.com/page/123"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },(error, response, body) => {
-            console.log(body)
-        });
-}
-
-function reply(replyToken, message){
-    request.post(
-        {
-            url: TARGET_URL,
-            headers: {
-                'Authorization': `Bearer ${TOKEN}`
-            },
-            json: {
-                "replyToken":replyToken,
-                "messages":[
-                    {
-                        "type":"text",
-                        "text":"Hello, user"
-                    },
-                    {
-                        "type":"text",
-                        "text":"May I help you?"
                     }
                 ]
             }
@@ -220,4 +141,3 @@ try {
     console.log('[HTTPS] HTTPS 오류가 발생하였습니다. HTTPS 서버는 실행되지 않습니다.');
     console.log(error);
   }
-  
