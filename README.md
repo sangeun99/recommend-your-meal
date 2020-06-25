@@ -33,19 +33,23 @@
 ### Installation
 
 1. 다음 링크에 접속하여 무료 API를 이용한다.
+
 * [https://developers.line.biz/en/](https://developers.line.biz/en/)
 * [https://developers.kakao.com/](https://developers.kakao.com/)
 * [https://openweathermap.org/](https://openweathermap.org/)
+
 2. 이 레파지토리를 Clone한다.
-```sh
+```
 git clone http://khuhub.khu.ac.kr/2018102205/meal-recommender.git
 ```
+
 3. NPM packages를 설치한다.
-```sh
+```
 npm install
 ```
+
 4. `app.js` 파일에 받은 API 값을 입력한다.
-```JS
+```
 const TOKEN = 'Line Messege API 얻은 Channel access token';
 const KAKAOKEY = 'Kakao Developers에서 얻은 API Key';
 const WEATHERKEY = 'Openweathermap에서 얻은 API Key';
@@ -61,8 +65,8 @@ const WEATHERKEY = 'Openweathermap에서 얻은 API Key';
 기본 중심값은 경희대학교 국제캠퍼스로 설정되어있다. 중심값을 바꾸고 싶다면 "내위치"를 전송한다. 전송 후에는 라인에서 지원하는 Quick Reply 메세지로 원하는 중심값을 전송할 수 있다. 앞으로 설정한 중심값 주변의 음식점을 추천해준다.
 "날씨추천"을 전송한다면 날씨를 기반으로 추천된 메뉴를 확인할 수 있다. 그 외에도 사용자는 자신이 입력한 키워드를 통해 음식점을 제공받을 수 있다.
 
-<img src="/images/screenshot1.png" width="30%" height="30%" alt="Screenshot1"></img>
-<img src="/images/screenshot2.png" width="30%" height="30%" alt="Screenshot2"></img>
+<img src="/images/screenshot1.png" width="20%" height="20%" alt="Screenshot1"></img>
+<img src="/images/screenshot2.png" width="20%" height="20%" alt="Screenshot2"></img>
 
 
 <!-- LICENSE -->
