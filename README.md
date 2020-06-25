@@ -14,11 +14,12 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<img src="/images/logo.png" width="10%" height="10%" alt="로고"></img>
+  <img src="/images/logo.png" width="10%" height="10%" alt="로고"></img>
+ 
+  이 챗봇은 현재 날씨를 기반으로 식사 메뉴를 추천해주고, 해당 메뉴를 먹을 수 있는 음식점을 소개한다.
 
-이 챗봇은 현재 날씨를 기반으로 식사 메뉴를 추천해주고, 해당 메뉴를 먹을 수 있는 음식점을 소개한다.
+  이 챗봇을 이용한다면 지도 어플리케이션에 들어가서 일일이 검색할 필요없이 간단한 작업으로 음식점을 소개받을 수 있다.
 
-이 챗봇을 이용한다면 지도 어플리케이션에 들어가서 일일이 검색할 필요없이 간단한 작업으로 음식점을 소개받을 수 있다.
 
 ### Built With
 
@@ -67,9 +68,10 @@ const WEATHERKEY = 'Openweathermap에서 얻은 API Key';
 
 "날씨추천"을 전송한다면 날씨를 기반으로 추천된 메뉴를 확인할 수 있다. 그 외에도 사용자는 자신이 입력한 키워드를 통해 음식점을 제공받을 수 있다.
 
-<img src="/images/screenshot1.png" width="20%" height="20%" alt="Screenshot1"></img>
-<img src="/images/screenshot2.png" width="20%" height="20%" alt="Screenshot2"></img>
-
+<p float="left">
+  <img src="/images/screenshot1.png" width="20%" height="20%" alt="Screenshot1"></img>
+  <img src="/images/screenshot2.png" width="20%" height="20%" alt="Screenshot2"></img>
+</p>
 
 <!-- LICENSE -->
 ## License
