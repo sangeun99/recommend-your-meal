@@ -1,3 +1,6 @@
+
+<br />
+
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
@@ -33,9 +36,9 @@
 ### Installation
 
 1. 다음 링크에 접속하여 무료 API를 이용한다.
-* [https://developers.line.biz/en/](https://developers.line.biz/en/)
-* [https://developers.kakao.com/](https://developers.kakao.com/)
-* [https://openweathermap.org/](https://openweathermap.org/)
+  * [https://developers.line.biz/en/](https://developers.line.biz/en/)
+  * [https://developers.kakao.com/](https://developers.kakao.com/)
+  * [https://openweathermap.org/](https://openweathermap.org/)
 
 2. 이 레파지토리를 Clone한다.
 ```
